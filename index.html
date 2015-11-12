@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>馒头商学院 - 数据统计系统</title>
+    <title>XXX - 数据统计系统</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="./libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -275,16 +275,16 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a data-module="dashboard" href="#"><i class="fa fa-dashboard fa-fw"></i> 控制台</a>
+                            <a data-module="dashboard" data-view="views/dashboard" href="#"><i class="fa fa-dashboard fa-fw"></i> 控制台</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 微信统计<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a data-module="wx_dy" href="pages/flot.html"> 订阅号数据</a>
+                                    <a data-module="wx_dy" data-view="views/weixin/wx_dy" href="#"> 订阅号数据</a>
                                 </li>
                                 <li>
-                                    <a data-module="wx_fw" href="pages/morris.html"> 服务号数据</a>
+                                    <a data-module="wx_fw" data-view="views/weixin/wx_fw.html" href="views/morris.html"> 服务号数据</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -368,7 +368,7 @@
             <!-- /.navbar-static-side -->
         </nav>
 
-        <div id="page-wrapper">
+        <div id="page-wrapper" class="row">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 id="module_title" class="page-header">Dashboard</h1>
@@ -381,16 +381,11 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
     <script src="./libs/jquery/dist/jquery.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="./libs/bootstrap/dist/js/bootstrap.min.js"></script>
-
-    <!-- Metis Menu Plugin JavaScript -->
     <script src="./libs/metisMenu/dist/metisMenu.min.js"></script>
+    <script src="./libs/script/script.min.js"></script>
     
-    <!--script src="./js/Util.js"></script-->
     <script src="./js/framework.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="./js/index.js"></script>

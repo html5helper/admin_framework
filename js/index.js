@@ -1,16 +1,3 @@
-var mt_event = new (Class.create(EventDispatcher,{
-    initialize : function() {
-        window.addEventListener('message', function(e){
-            this.dispatchEvent({name:'window.message',data:e.data});
-        }.bind(this), false);
-    },
-    postMessage : function(frame,data,origin){
-        origin = origin|"*";
-        if(frame.postMessage){
-            frame.postMessage(data,origin);
-        }
-    }
-}));
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
 // Sets the min-height of #page-wrapper to window size
@@ -46,18 +33,10 @@ function renderMenu() {
 
 $(function() {
     renderMenu();
-    var defaultView = Class.create(mt.DefaultView,{
-        initialize : function() {
-            this.container = $("#module_title");
-        },
-        run : function(moduleId){
-            this.container.html(moduleId);
-        },
-        stop : function(){
-            if(this.container){
-                $(this.container).html('');
-            }
-        }
-    });
-    var admin = new mt.AdminFramework($("#side-menu li a"),defaultView);
+
+    var options = {
+        menuItems : $("#side-menu li a"),
+        container : $("#page-wrapper")
+    };
+    var admin = new mt.AdminFramework(options);
 });

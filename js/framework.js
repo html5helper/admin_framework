@@ -1,5 +1,5 @@
 /*
-* 依赖于jquery.js
+* 依赖于jquery.js script.js
 * 
 */
 
@@ -271,15 +271,15 @@ var BaseView = Class.create({
 var IframeView = Class.create(BaseView,{
     initialize : function(url) {
         this.url = url;
+        //this.container = null;
     },
-    run : function(container,moduleId){
-        this.container = container;
+    run : function(moduleId){
         this.moduleId = moduleId;
-        $(container).html('<iframe src="' + this.url + '" scrolling="no" style="width:100%;height:100%;padding:0px;margin:0px;border:0px;"></iframe>');
+        this.container.html('<iframe src="' + this.url + '" scrolling="no" style="width:100%;height:100%;padding:0px;margin:0px;border:0px;"></iframe>');
     },
     stop : function(){
         if(this.container){
-            $(this.container).html('');
+            this.container.html('');
         }
     }
 });
@@ -287,7 +287,7 @@ var DefaultView = Class.create(BaseView,{
     initialize : function() {
     },
     run : function(moduleId){
-        alert(moduleId);
+         $(this.container).html(moduleId);
     },
     stop : function(){
         if(this.container){
@@ -295,21 +295,26 @@ var DefaultView = Class.create(BaseView,{
         }
     }
 });
-var views = {};
-var currentView = null;
 
+var views = {};
 var AdminFramework = Class.create(EventDispatcher,{
-    initialize : function(menuItems,view) {
+    initialize : function(options) {
+        this.options = {};
+        this.options.menuItems = options.menuItems||[];
+        mt.IframeView.prototype.container = options.container;
+        mt.DefaultView.prototype.container = options.container;
+        
         window.addEventListener('message', function(e){
             this.dispatchEvent({name:'window.message',data:e.data});
         }.bind(this), false);
         
-        this.defaultView = view?view:DefaultView;
+        this.currentView = null;
         
-        if(menuItems){
-            this._bindMenu(menuItems);
+        if(this.options.menuItems){
+            this._bindMenu(this.options.menuItems);
         }
         //this.menu = new MenuManager(menuItems);
+        this.addEventListener('view.ready',this._viewReadyHandler.bind(this));
     },
     postMessage : function(frame,data,origin){
         origin = origin|"*";
@@ -325,14 +330,27 @@ var AdminFramework = Class.create(EventDispatcher,{
         if(typeof($(event.currentTarget).attr("data-module")) =="undefined"){
             return false;
         }
-        if (currentView != null)
-            currentView.stop();
+        if (this.currentView != null){
+            this.currentView.stop();
+        }
         
         var mod = event.currentTarget.dataset['module'];
-        currentView = new ((mt.views[mod])?mt.views[mod]:this.defaultView);
-        currentView.run(mod);
-
-        //this.dispatchEvent({name:'menu.click',module:mod});
+        var view = event.currentTarget.dataset['view'];
+        if(view !=undefined && view.indexOf('.html') > 0){
+            this.currentView = new mt.IframeView(view);
+            this.dispatchEvent({name:'view.ready',data:mod});
+        }else if(mt.views[mod] == undefined){
+            $script(view+'.js', function() {
+                this.currentView = new ((mt.views[mod])? mt.views[mod]:mt.DefaultView);
+                this.dispatchEvent({name:'view.ready',data:mod});
+            }.bind(this));
+        }else{
+            this.currentView = new (mt.views[mod]);
+            this.dispatchEvent({name:'view.ready',data:mod});
+        }
+    },
+    _viewReadyHandler:function(event){
+        this.currentView.run(event.data);
     }
 });
 
